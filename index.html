@@ -1,357 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Engineering Toolkit | Instrumentation & Control Documentation</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<style>
-  :root {
-    --primary: #0f172a;
-    --secondary: #3b82f6;
-    --accent: #ec4899;
-    --neon: #00f7ff;
-    --light: #f8fafc;
-    --gradient: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
-  }
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    line-height: 1.7;
-    color: var(--light);
-    background-color: var(--primary);
-    overflow-x: hidden;
-  }
-  header {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(10px);
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-  }
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  .logo-icon {
-    font-size: 2.5rem;
-    color: var(--neon);
-    text-shadow: 0 0 10px var(--neon);
-  }
-  .logo-text h1 {
-    font-size: 1.8rem;
-    color: var(--neon);
-    letter-spacing: 1px;
-  }
-  nav ul {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-  }
-  nav a {
-    color: var(--light);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 0;
-  }
-  /* Hero Section */
-  .hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    padding-top: 80px;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: url('https://cdn.mashreghnews.ir/d/old/files/fa/news/1393/2/16/567241_865.jpg') no-repeat center center/cover;
-    z-index: -2;
-    opacity: 0.3;
-  }
-  .hero::after {
-    content: '';
-    position: absolute;
-    top:0; left:0;
-    width: 100%; height: 100%;
-    background: var(--gradient);
-    z-index: -1;
-    opacity: 0.9;
-  }
-  .hero-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    position: relative;
-    text-align: center;
-  }
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    color: var(--light);
-  }
-  .hero p {
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
-    max-width: 800px;
-    opacity: 0.9;
-    margin-left:auto; margin-right:auto;
-  }
-  /* Video Section */
-  .video-section {
-    padding: 4rem 2rem;
-    background: rgba(15, 23, 42, 0.9);
-    text-align: center;
-  }
-  .video-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .video-container h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: var(--neon);
-  }
-  .video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
-    overflow: hidden;
-    margin-bottom: 2rem;
-    background: #000;
-    border: 2px solid var(--neon);
-    border-radius: 8px;
-  }
-  .video-embed {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border: none;
-  }
-  .video-fallback {
-    display: none;
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    padding: 2rem;
-    text-align: center;
-    background: rgba(0,0,0,0.9);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .fallback-options {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 1.5rem 0;
-  }
-  .download-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0.8rem 1.5rem;
-    background: var(--neon);
-    color: var(--primary);
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-  .download-btn:hover {
-    background: var(--secondary);
-    color: var(--light);
-    transform: translateY(-2px);
-  }
-  .video-info {
-    margin-top: 1rem;
-    font-size: 0.9em;
-    color: var(--neon);
-  }
-  /* Feedback Section */
-  .comment-section {
-    padding: 4rem 2rem;
-    background: rgba(15, 23, 42, 0.7);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  .comment-section h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: var(--neon);
-    text-align: center;
-  }
-  .comment-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .form-group label {
-    font-weight: 500;
-    color: var(--neon);
-  }
-  .form-group input,
-  .form-group textarea {
-    padding: 0.8rem;
-    border: 1px solid var(--secondary);
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    color: var(--light);
-    font-size: 1rem;
-  }
-  .form-group textarea {
-    min-height: 150px;
-    resize: vertical;
-  }
-  .submit-btn {
-    padding: 1rem 2rem;
-    background: var(--neon);
-    color: var(--primary);
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    align-self: center;
-    width: 200px;
-  }
-  .submit-btn:hover {
-    background: var(--secondary);
-    color: var(--light);
-  }
-  /* Responsive adjustments */
-  @media(max-width:768px){
-    .hero h1 { font-size: 2rem; }
-    .hero p { font-size: 1rem; }
-    header { flex-direction: column; align-items: center; }
-    nav ul { flex-wrap: wrap; justify-content: center; }
-    .video-container h2 { font-size: 1.8rem; }
-    .fallback-options { flex-direction: column; gap: 0.5rem; }
-    .download-btn { justify-content: center; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Toolkit | Instrumentation & Control Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #3b82f6;
+            --accent: #ec4899;
+            --neon: #00f7ff;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--light);
+            background-color: var(--primary);
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--neon);
+            text-shadow: 0 0 10px var(--neon);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            color: var(--neon);
+            letter-spacing: 1px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.mashreghnews.ir/d/old/files/fa/news/1393/2/16/567241_865.jpg') no-repeat center center/cover;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            z-index: -1;
+            opacity: 0.9;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--light);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            opacity: 0.9;
+        }
+        
+        .video-section {
+            padding: 4rem 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            text-align: center;
+        }
+        
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .video-container h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--neon);
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: #000;
+            border: 2px solid var(--neon);
+            border-radius: 8px;
+        }
+        
+        .video-embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-fallback {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(0,0,0,0.9);
+            color: white;
+        }
+        
+        .fallback-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.8rem 1.5rem;
+            background: var(--neon);
+            color: var(--primary);
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background: var(--secondary);
+            color: var(--light);
+            transform: translateY(-2px);
+        }
+        
+        .video-info {
+            margin-top: 1rem;
+            font-size: 0.9em;
+            color: var(--neon);
+        }
+        
+        .comment-section {
+            padding: 4rem 2rem;
+            background: rgba(15, 23, 42, 0.7);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .comment-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--neon);
+            text-align: center;
+        }
+        
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            color: var(--neon);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            padding: 1rem 2rem;
+            background: var(--neon);
+            color: var(--primary);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: center;
+            width: 200px;
+        }
+        
+        .submit-btn:hover {
+            background: var(--secondary);
+            color: var(--light);
+        }
+
+        /* New styles for feedback submission */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .form-message {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .video-container h2 {
+                font-size: 1.8rem;
+            }
+            
+            .fallback-options {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .download-btn {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="header-container">
-    <div class="logo">
-      <div class="logo-icon"><i class="fas fa-tools"></i></div>
-      <div class="logo-text"><h1>Engineering Toolkit</h1></div>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#video">Toolkit Video</a></li>
-        <li><a href="#comments">Feedback</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<section class="hero" id="home">
-  <div class="hero-content">
-    <h1>Engineering Instrumentation & Control Documentation Toolkit</h1>
-    <p>Streamline your documentation process with our specialized toolkit designed to make preparing engineering documents faster, easier, and more reliable.</p>
-  </div>
-</section>
-
-<section class="video-section" id="video">
-  <div class="video-container">
-    <h2>Toolkit Demonstration</h2>
-    <div class="video-wrapper">
-      <!-- Embed your Google Drive Video -->
-      <iframe class="video-embed"
-        src="https://drive.google.com/file/d/1gZ09IIKSPMSpBrq-J9-Q7CytyI2dN5NM/preview"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-      <!-- Fallback Content -->
-      <div class="video-fallback" id="videoFallback">
-        <p><i class="fas fa-exclamation-triangle"></i> Video playback not available</p>
-        <div class="fallback-options">
-          <a href="https://drive.google.com/file/d/1gZ09IIKSPMSpBrq-J9-Q7CytyI2dN5NM/view" 
-             class="download-btn" target="_blank">
-            <i class="fab fa-google-drive"></i> Open in Google Drive
-          </a>
-          <a href="toolkit-demo.mp4" class="download-btn" download>
-            <i class="fas fa-download"></i> Download MP4
-          </a>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Engineering Toolkit</h1>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#video">Toolkit Video</a></li>
+                    <li><a href="#comments">Feedback</a></li>
+                </ul>
+            </nav>
         </div>
-        <p class="video-info">File size: ~10MB | Duration: 2:30</p>
-      </div>
-    </div>
-    <p>This video demonstrates how our toolkit simplifies the documentation process for engineering instrumentation and control systems.</p>
-  </div>
-</section>
+    </header>
 
-<section class="comment-section" id="comments">
-  <h2>Share Your Feedback</h2>
-  <form class="comment-form" id="feedbackForm" method="POST" action="https://script.google.com/macros/s/AKfycbwUYKWuRooCt2Cvq0wER5vgs8SRFjAI-DP_H9c-2llTxI18v5n73hivQxu2axuIe6On4w">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="entry.123456" required>
-    </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="entry.234567" required>
-    </div>
-    <div class="form-group">
-      <label for="comment">Your Feedback:</label>
-      <textarea id="comment" name="entry.345678" required></textarea>
-    </div>
-    <button type="submit" class="submit-btn">Submit</button>
-  </form>
-</section>
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Engineering Instrumentation & Control Documentation Toolkit</h1>
+            <p>Streamline your documentation process with our specialized toolkit designed to make preparing engineering documents faster, easier, and more reliable.</p>
+        </div>
+    </section>
 
-<script>
-  // Show fallback if iframe fails
-  document.addEventListener('DOMContentLoaded', function() {
-    const iframe = document.querySelector('.video-embed');
-    const fallbackDiv = document.getElementById('videoFallback');
+    <section class="video-section" id="video">
+        <div class="video-container">
+            <h2>Toolkit Demonstration</h2>
+            <div class="video-wrapper">
+                <!-- Primary Option: Google Drive Embed -->
+                <iframe class="video-embed"
+                    src="https://drive.google.com/file/d/1gZ09IIKSPMSpBrq-J9-Q7CytyI2dN5NM/preview"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                
+                <!-- Fallback Content -->
+                <div class="video-fallback">
+                    <p><i class="fas fa-exclamation-triangle"></i> Video playback not available</p>
+                    <div class="fallback-options">
+                        <a href="https://drive.google.com/file/d/1gZ09IIKSPMSpBrq-J9-Q7CytyI2dN5NM/view" 
+                           class="download-btn" 
+                           target="_blank">
+                            <i class="fab fa-google-drive"></i> Open in Google Drive
+                        </a>
+                        <a href="toolkit-demo.mp4" class="download-btn" download>
+                            <i class="fas fa-download"></i> Download MP4
+                        </a>
+                    </div>
+                    <p class="video-info">File size: ~10MB | Duration: 2:30</p>
+                </div>
+            </div>
+            <p>This video demonstrates how our toolkit simplifies the documentation process for engineering instrumentation and control systems.</p>
+        </div>
+    </section>
 
-    // Create a timeout function to check iframe content/loading
-    setTimeout(function() {
-      try {
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        if (!iframeDocument || iframeDocument.body.innerHTML.includes("Sorry")) {
-          fallbackDiv.style.display = 'flex';
+    <section class="comment-section" id="comments">
+        <h2>Share Your Feedback</h2>
+        <form class="comment-form" id="feedbackForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="comment">Your Feedback:</label>
+                <textarea id="comment" name="comment" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Submit
+                <span class="loading" id="loading" style="display: none;"></span>
+            </button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </section>
+
+    <script>
+        // Form submission handling with Google Sheets integration
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const formMessage = document.getElementById('formMessage');
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const comment = document.getElementById('comment').value.trim();
+            
+            // Validation
+            if (!name || !email || !comment) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            loading.style.display = 'inline-block';
+            formMessage.style.display = 'none';
+            
+            try {
+                // Your Google Apps Script URL
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwUYKWuRooCt2Cvq0wER5vgs8SRFjAI-DP_H9c-2llTxI18v5n73hivQxu2axuIe6On4w/exec';
+                
+                const formData = new URLSearchParams();
+                formData.append('name', name);
+                formData.append('email', email);
+                formData.append('comment', comment);
+                
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.result === 'success') {
+                        showMessage('Thank you for your feedback! We appreciate your input.', 'success');
+                        this.reset();
+                    } else {
+                        throw new Error(result.error || 'Submission failed');
+                    }
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An error occurred. Please try again later.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        // Helper functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
-      } catch (e) {
-        // If cross-origin or error, fallback
-        fallbackDiv.style.display = 'flex';
-      }
-    }, 3000);
-  });
+        
+        function showMessage(message, type) {
+            const formMessage = document.getElementById('formMessage');
+            formMessage.textContent = message;
+            formMessage.className = `form-message ${type}`;
+            formMessage.style.display = 'block';
+            
+            // Auto-hide success message after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    formMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
 
-  // Optional: AJAX form submission (if you want to handle via script)
-  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-    // For now, let form submit normally to your Google Apps Script
-    // You can add AJAX handling here if needed
-  });
-</script>
+        // Enhanced video handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoEmbed = document.querySelector('.video-embed');
+            const fallback = document.querySelector('.video-fallback');
+            
+            // Check if embed failed to load
+            videoEmbed.onload = function() {
+                try {
+                    if(videoEmbed.contentWindow.document.body.innerHTML.includes("Sorry, unable to embed")) {
+                        showFallback();
+                    }
+                } catch (e) {
+                    showFallback();
+                }
+            };
+            
+            // Initial timeout check
+            setTimeout(function() {
+                if(videoEmbed.clientHeight === 0) {
+                    showFallback();
+                }
+            }, 3000);
+            
+            function showFallback() {
+                videoEmbed.style.display = 'none';
+                fallback.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
